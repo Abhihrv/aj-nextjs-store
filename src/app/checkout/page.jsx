@@ -5,12 +5,17 @@ import { Button } from "@/components/ui/button";
 import { checkoutAction } from "./checkout-action";
 
 export default function CheckoutPage() {
-  const { items, removeItem, addItem, clearCart } = useCartStore();
+  const { items, removeItem, addItem, toggleShippingProtection, clearCart } = useCartStore();
 
   const total = items.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
+
+  const shippingProtectionAdded = items.some(
+    (item) => item.id === "shipping_protection"
+  );
+
   const onAddItem = (item) => {
     addItem({
       id: item.id,
@@ -80,6 +85,11 @@ export default function CheckoutPage() {
         className="max-w-md mx-auto flex flex-col gap-4"
       >
         <input type="hidden" name="items" value={JSON.stringify(items)} />
+
+        <Button type="button" onClick={() => toggleShippingProtection()}>
+          {shippingProtectionAdded ? "Remove" : "Add"} Shipping Protection ($2.15)
+        </Button>
+
         <Button
           type="submit"
           variant="default"

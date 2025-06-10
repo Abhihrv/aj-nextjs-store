@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Card, CardTitle, CardContent } from "./ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -95,9 +96,9 @@ export const Carousel = ({ products }) => {
               </p>
             )}
 
-            <button className="bg-white text-black hover:bg-gray-100 font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 w-fit">
-              Shop Now
-            </button>
+            <Link href={`/products/${currentProduct.id}`}><button className="bg-white text-black hover:bg-gray-100 font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 w-fit">
+               Shop Now
+            </button></Link>
           </div>
         </CardContent>
 

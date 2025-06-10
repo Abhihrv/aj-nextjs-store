@@ -5,11 +5,11 @@ import Link from "next/link";
 import { Carousel } from "@/components/carousel";
 
 export default async function Home() {
-  const products = await stripe.products.list({
+  const stripeProducts = await stripe.products.list({
     expand: ["data.default_price"],
     limit: 5,
   });
-
+  const products = stripeProducts.data.filter((product) => product.id !== "prod_ST5lxHhLtEzVHj")
   return (
     <div>
       <section className="rounded bg-neutral-100 py-8 sm:py-12">
@@ -36,7 +36,7 @@ export default async function Home() {
           </div>
           <Image
             alt="Hero Image"
-            src={products.data[0].images[0]}
+            src={products[0].images[0]}
             className="rounded"
             width={450}
             height={450}
@@ -44,7 +44,7 @@ export default async function Home() {
         </div>
       </section>
       <section className="py-8">
-        <Carousel products={products.data} />
+        <Carousel products={products} />
       </section>
     </div>
   );
