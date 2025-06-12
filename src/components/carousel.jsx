@@ -96,7 +96,7 @@ export const Carousel = ({ products }) => {
               </p>
             )}
 
-            <Link href={`/products/${currentProduct.id}`}><button className="bg-white text-black hover:bg-gray-100 font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 w-fit">
+            <Link href={`/products/${currentProduct.id}`}><button className="bg-white text-black hover:bg-gray-100 font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 w-fit cursor-pointer">
                Shop Now
             </button></Link>
           </div>

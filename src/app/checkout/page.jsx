@@ -11,56 +11,50 @@ import { checkoutAction } from "./checkout-action";
 import { useEffect } from "react";
 
 export default function CheckoutPage() {
-  const { items, removeItem, addItem, toggleShippingProtection, clearCart } = useCartStore();
+  const { items, removeItem, addItem, clearCart } = useCartStore();
   const {
-    cartItems,
+    shippingProtection,
     shippingAddress,
     billingAddress,
     useBillingAsShipping,
+    subtotal,
+    shippingProtectionFee,
+    tax,
+    shipping,
+    total,
+    isShippingValidCache,
+    isBillingValidCache,
     setCartItems,
+    toggleShippingProtection,
     updateShippingAddress,
     updateBillingAddress,
     setUseBillingAsShipping,
-    getSubtotal,
-    getTax,
-    getShipping,
-    getTotal,
+    calculateCheckoutTotals,
     isShippingAddressValid,
     isBillingAddressValid,
   } = useCheckoutStore();
 
-  // Sync cart items with checkout store
+  // Sync cart items with checkout store and calculate totals
   useEffect(() => {
     setCartItems(items);
-  }, [items, setCartItems]);
+    calculateCheckoutTotals();
+  }, [items, setCartItems, calculateCheckoutTotals]);
 
-  const total = items.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
+  // Recalculate totals when shipping protection changes
+  useEffect(() => {
+    calculateCheckoutTotals();
+  }, [shippingProtection, calculateCheckoutTotals]);
 
-  const shippingProtectionAdded = items.some(
-    (item) => item.id === "shipping_protection"
-  );
+  // Update validation when addresses change
+  useEffect(() => {
+    isShippingAddressValid();
+    isBillingAddressValid();
+  }, [shippingAddress, billingAddress, useBillingAsShipping, isShippingAddressValid, isBillingAddressValid]);
 
-  const onAddItem = (item) => {
-    addItem({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      imageUrl: item.imageUrl,
-      quantity: 1,
-    });
-  };
-
-  const onRemoveItem = (item) => {
-    removeItem(item.id);
-  };
-
-  if (total === 0 || items.length === 0) {
+  if (items.length === 0) {
     return (
       <div>
-        <h1>You Cart is Empty.</h1>
+        <h1>Your Cart is Empty.</h1>
       </div>
     );
   }
@@ -344,7 +338,7 @@ export default function CheckoutPage() {
             <CardContent>
               <ul className="space-y-4">
                 {items.map((item) => (
-                  <li key={item.id} className="flex flex-col gap-2 border-b pb-2">
+                  <li key={item.id} className="flex flex-col gap-2 pb-2">
                     <div className="flex justify-between">
                       <span className="font-medium">{item.name}</span>
                       <span className="font-semibold">
@@ -375,39 +369,48 @@ export default function CheckoutPage() {
               <div className="mt-4 space-y-2 border-t pt-4">
                 <div className="flex justify-between">
                   <span>Subtotal:</span>
-                  <span>${(getSubtotal() / 100).toFixed(2)}</span>
+                  <span>${((subtotal || 0) / 100).toFixed(2)}</span>
                 </div>
+                {(shippingProtectionFee || 0) > 0 && (
+                  <div className="flex justify-between">
+                    <span>Shipping Protection:</span>
+                    <span>${((shippingProtectionFee || 0) / 100).toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span>Shipping:</span>
-                  <span>{getShipping() === 0 ? 'Free' : `$${(getShipping() / 100).toFixed(2)}`}</span>
+                  <span>{(shipping || 0) === 0 ? 'Free' : `$${((shipping || 0) / 100).toFixed(2)}`}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Tax:</span>
-                  <span>${(getTax() / 100).toFixed(2)}</span>
+                  <span>${((tax || 0) / 100).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-lg font-semibold border-t pt-2">
                   <span>Total:</span>
-                  <span>${(getTotal() / 100).toFixed(2)}</span>
+                  <span>${((total || 0) / 100).toFixed(2)}</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <div className="space-y-4">
-            <Button type="button" onClick={() => toggleShippingProtection()} className="w-full">
-              {shippingProtectionAdded ? "Remove" : "Add"} Shipping Protection ($2.15)
+            <Button type="button" onClick={() => toggleShippingProtection()} className={`w-full border border-black ${shippingProtection ? "bg-white text-black" : "bg-black text-white"} hover:bg-gray-800 hover:text-white cursor-pointer`}>
+              {shippingProtection ? "Remove" : "Add"} Shipping Protection ($2.15)
             </Button>
 
             <form action={checkoutAction} className="space-y-4">
               <input type="hidden" name="items" value={JSON.stringify(items)} />
+              <input type="hidden" name="shippingProtection" value={JSON.stringify(shippingProtection)} />
               <input type="hidden" name="shippingAddress" value={JSON.stringify(shippingAddress)} />
               <input type="hidden" name="billingAddress" value={JSON.stringify(useBillingAsShipping ? shippingAddress : billingAddress)} />
+              <input type="hidden" name="taxes" value={JSON.stringify(tax)} />
+              <input type="hidden" name="shipping" value={JSON.stringify(shipping)} />
               
               <Button
                 type="submit"
                 variant="default"
                 className="w-full bg-black hover:bg-gray-800 text-white hover:text-white cursor-pointer"
-                disabled={!isShippingAddressValid() || !isBillingAddressValid()}
+                disabled={!isShippingValidCache || !isBillingValidCache}
               >
                 Proceed to Payment
               </Button>
