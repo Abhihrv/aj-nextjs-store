@@ -19,7 +19,7 @@ export default function CheckoutPage() {
     useBillingAsShipping,
     subtotal,
     shippingProtectionFee,
-    tax,
+    taxes,
     shipping,
     total,
     isShippingValidCache,
@@ -77,7 +77,7 @@ export default function CheckoutPage() {
                   <Label htmlFor="firstName" className="mb-0.5">First Name</Label>
                   <Input
                     id="firstName"
-                    value={shippingAddress.firstName}
+                    defaultValue={shippingAddress.firstName}
                     onChange={(e) => updateShippingAddress({ firstName: e.target.value })}
                     placeholder="John"
                   />
@@ -86,7 +86,7 @@ export default function CheckoutPage() {
                   <Label htmlFor="lastName" className="mb-0.5">Last Name</Label>
                   <Input
                     id="lastName"
-                    value={shippingAddress.lastName}
+                    defaultValue={shippingAddress.lastName}
                     onChange={(e) => updateShippingAddress({ lastName: e.target.value })}
                     placeholder="Doe"
                   />
@@ -98,7 +98,7 @@ export default function CheckoutPage() {
                 <Input
                   id="email"
                   type="email"
-                  value={shippingAddress.email}
+                  defaultValue={shippingAddress.email}
                   onChange={(e) => updateShippingAddress({ email: e.target.value })}
                   placeholder="john@example.com"
                 />
@@ -109,7 +109,7 @@ export default function CheckoutPage() {
                 <Input
                   id="phone"
                   type="tel"
-                  value={shippingAddress.phone}
+                  defaultValue={shippingAddress.phone}
                   onChange={(e) => updateShippingAddress({ phone: e.target.value })}
                   placeholder="(555) 123-4567"
                 />
@@ -119,7 +119,7 @@ export default function CheckoutPage() {
                 <Label htmlFor="address1" className="mb-0.5">Address</Label>
                 <Input
                   id="address1"
-                  value={shippingAddress.address1}
+                  defaultValue={shippingAddress.address1}
                   onChange={(e) => updateShippingAddress({ address1: e.target.value })}
                   placeholder="123 Main St"
                 />
@@ -129,7 +129,7 @@ export default function CheckoutPage() {
                 <Label htmlFor="address2" className="mb-0.5">Apartment, suite, etc. (Optional)</Label>
                 <Input
                   id="address2"
-                  value={shippingAddress.address2}
+                  defaultValue={shippingAddress.address2}
                   onChange={(e) => updateShippingAddress({ address2: e.target.value })}
                   placeholder="Apt 4B"
                 />
@@ -140,7 +140,7 @@ export default function CheckoutPage() {
                   <Label htmlFor="city" className="mb-0.5">City</Label>
                   <Input
                     id="city"
-                    value={shippingAddress.city}
+                    defaultValue={shippingAddress.city}
                     onChange={(e) => updateShippingAddress({ city: e.target.value })}
                     placeholder="New York"
                   />
@@ -150,7 +150,7 @@ export default function CheckoutPage() {
                     <Label htmlFor="state" className="mb-0.5">State</Label>
                     <Input
                       id="state"
-                      value={shippingAddress.state}
+                      defaultValue={shippingAddress.state}
                       onChange={(e) => updateShippingAddress({ state: e.target.value })}
                       placeholder="NY"
                     />
@@ -159,7 +159,7 @@ export default function CheckoutPage() {
                     <Label htmlFor="zipCode" className="mb-0.5">ZIP</Label>
                     <Input
                       id="zipCode"
-                      value={shippingAddress.zipCode}
+                      defaultValue={shippingAddress.zipCode}
                       onChange={(e) => updateShippingAddress({ zipCode: e.target.value })}
                       placeholder="10001"
                     />
@@ -219,7 +219,7 @@ export default function CheckoutPage() {
                       <Label htmlFor="billingFirstName" className="mb-0.5">First Name</Label>
                       <Input
                         id="billingFirstName"
-                        value={billingAddress.firstName}
+                        defaultValue={billingAddress.firstName}
                         onChange={(e) => updateBillingAddress({ firstName: e.target.value })}
                         placeholder="John"
                       />
@@ -228,7 +228,7 @@ export default function CheckoutPage() {
                       <Label htmlFor="billingLastName" className="mb-0.5">Last Name</Label>
                       <Input
                         id="billingLastName"
-                        value={billingAddress.lastName}
+                        defaultValue={billingAddress.lastName}
                         onChange={(e) => updateBillingAddress({ lastName: e.target.value })}
                         placeholder="Doe"
                       />
@@ -240,7 +240,7 @@ export default function CheckoutPage() {
                     <Input
                       id="billingEmail"
                       type="email"
-                      value={billingAddress.email}
+                      defaultValue={billingAddress.email}
                       onChange={(e) => updateBillingAddress({ email: e.target.value })}
                       placeholder="john@example.com"
                     />
@@ -250,7 +250,7 @@ export default function CheckoutPage() {
                     <Label htmlFor="billingAddress1" className="mb-0.5">Address</Label>
                     <Input
                       id="billingAddress1"
-                      value={billingAddress.address1}
+                      defaultValue={billingAddress.address1}
                       onChange={(e) => updateBillingAddress({ address1: e.target.value })}
                       placeholder="123 Main St"
                     />
@@ -260,7 +260,7 @@ export default function CheckoutPage() {
                     <Label htmlFor="billingAddress2" className="mb-0.5">Apartment, suite, etc. (Optional)</Label>
                     <Input
                       id="billingAddress2"
-                      value={billingAddress.address2}
+                      defaultValue={billingAddress.address2}
                       onChange={(e) => updateBillingAddress({ address2: e.target.value })}
                       placeholder="Apt 4B"
                     />
@@ -271,7 +271,7 @@ export default function CheckoutPage() {
                       <Label htmlFor="billingCity" className="mb-0.5">City</Label>
                       <Input
                         id="billingCity"
-                        value={billingAddress.city}
+                        defaultValue={billingAddress.city}
                         onChange={(e) => updateBillingAddress({ city: e.target.value })}
                         placeholder="New York"
                       />
@@ -281,7 +281,7 @@ export default function CheckoutPage() {
                         <Label htmlFor="billingState" className="mb-0.5">State</Label>
                         <Input
                           id="billingState"
-                          value={billingAddress.state}
+                          defaultValue={billingAddress.state}
                           onChange={(e) => updateBillingAddress({ state: e.target.value })}
                           placeholder="NY"
                         />
@@ -290,7 +290,7 @@ export default function CheckoutPage() {
                         <Label htmlFor="billingZipCode" className="mb-0.5">ZIP</Label>
                         <Input
                           id="billingZipCode"
-                          value={billingAddress.zipCode}
+                          defaultValue={billingAddress.zipCode}
                           onChange={(e) => updateBillingAddress({ zipCode: e.target.value })}
                           placeholder="10001"
                         />
@@ -383,7 +383,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="flex justify-between">
                   <span>Tax:</span>
-                  <span>${((tax || 0) / 100).toFixed(2)}</span>
+                  <span>${((taxes || 0) / 100).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-lg font-semibold border-t pt-2">
                   <span>Total:</span>
@@ -403,7 +403,7 @@ export default function CheckoutPage() {
               <input type="hidden" name="shippingProtection" value={JSON.stringify(shippingProtection)} />
               <input type="hidden" name="shippingAddress" value={JSON.stringify(shippingAddress)} />
               <input type="hidden" name="billingAddress" value={JSON.stringify(useBillingAsShipping ? shippingAddress : billingAddress)} />
-              <input type="hidden" name="taxes" value={JSON.stringify(tax)} />
+              <input type="hidden" name="taxes" value={JSON.stringify(taxes)} />
               <input type="hidden" name="shipping" value={JSON.stringify(shipping)} />
               
               <Button

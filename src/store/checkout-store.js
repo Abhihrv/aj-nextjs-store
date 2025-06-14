@@ -1,11 +1,10 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 const defaultAddress = {
   firstName: "",
   lastName: "",
   email: "",
-  phone: "",
   address1: "",
   address2: "",
   city: "",
@@ -14,20 +13,29 @@ const defaultAddress = {
   country: "US",
 };
 
+const initialState = {
+  cartItems: [],
+  shippingProtection: false,
+  shippingAddress: { ...defaultAddress },
+  billingAddress: { ...defaultAddress },
+  useBillingAsShipping: true,
+  subtotal: 0,
+  shippingProtectionFee: 0,
+  taxes: 0,
+  shipping: 0,
+  total: 0,
+  isShippingValidCache: false,
+  isBillingValidCache: false,
+};
+
 export const useCheckoutStore = create()(
   persist(
     (set) => ({
-      cartItems: [],
-      shippingProtection: false,
-      shippingAddress: { ...defaultAddress },
-      billingAddress: { ...defaultAddress },
-      useBillingAsShipping: true,
+      ...initialState,
 
-      setCartItems: (items) =>
-        set(() => ({ cartItems: items })),
+      setCartItems: (items) => set(() => ({ cartItems: items })),
 
-      setShippingProtection: (value) =>
-        set(() => ({ shippingProtection: value })),
+      setShippingProtection: (value) => set(() => ({ shippingProtection: value })),
 
       toggleShippingProtection: () =>
         set((state) => ({ shippingProtection: !state.shippingProtection })),
@@ -41,17 +49,13 @@ export const useCheckoutStore = create()(
         set((state) => ({
           billingAddress: { ...state.billingAddress, ...address },
         })),
-
+        
       setUseBillingAsShipping: (value) =>
         set(() => ({ useBillingAsShipping: value })),
 
       clearCheckout: () =>
         set(() => ({
-          cartItems: [],
-          shippingProtection: false,
-          shippingAddress: { ...defaultAddress },
-          billingAddress: { ...defaultAddress },
-          useBillingAsShipping: true,
+          ...initialState,
         })),
 
       isShippingAddressValid: () =>
@@ -90,20 +94,19 @@ export const useCheckoutStore = create()(
       calculateCheckoutTotals: () =>
         set((state) => {
           const subtotal = state.cartItems.reduce(
-            (total, item) =>
-              total + (item.price || 0) * (item.quantity || 0),
+            (total, item) => total + (item.price || 0) * (item.quantity || 0),
             0
           );
 
           const shippingProtectionFee = state.shippingProtection ? 215 : 0;
-          const tax = Math.round(subtotal * 0.08);
+          const taxes = Math.round(subtotal * 0.08);
           const shipping = subtotal >= 10000 ? 0 : 1000;
-          const total = subtotal + tax + shipping + shippingProtectionFee;
+          const total = subtotal + taxes + shipping + shippingProtectionFee;
 
           return {
             subtotal,
             shippingProtectionFee,
-            tax,
+            taxes,
             shipping,
             total,
           };
@@ -111,6 +114,12 @@ export const useCheckoutStore = create()(
     }),
     {
       name: "checkout",
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        ...state,
+        isShippingValidCache: false,
+        isBillingValidCache: false,
+      }),
     }
   )
 );

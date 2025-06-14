@@ -1,10 +1,14 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
+
+const initialState = {
+  items: [],
+};
 
 export const useCartStore = create()(
   persist(
     (set) => ({
-      items: [],
+      ...initialState,
 
       addItem: (item) =>
         set((state) => {
@@ -41,6 +45,12 @@ export const useCartStore = create()(
 
       clearCart: () => set(() => ({ items: [] })),
     }),
-    { name: "cart" }
+    {
+      name: "cart",
+      storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => (state) => {
+        console.log("Cart store rehydrated:", state);
+      },
+    }
   )
 );
